@@ -11,17 +11,23 @@ module.exports.getAll = async(req,res) => {
     }
 }
 
-module.exports.getById = (req,res) => {
+module.exports.getById = async (req,res) => {
     try {
-
+        const user = await User.findById({_id: req.params.id})
+        res.status(200).json(user)
     } catch (e) {
         errorhandler(res, e)
     }
 }
 
-module.exports.update = (req,res) => {
+module.exports.update = async (req,res) => {
     try {
-
+        const user = await User.findOneAndUpdate(
+            {_id: req.params.id},
+            {$set: req.body},
+            {new: true}
+            )
+        res.status(200).json(user)
     } catch (e) {
         errorhandler(res, e)
     }
@@ -39,9 +45,12 @@ module.exports.create = async (req,res) => {
         errorhandler(res, e)
     }
 }
-module.exports.delete = (req,res) => {
+module.exports.delete = async(req,res) => {
     try {
-
+        await User.remove({_id: req.params.id})
+        res.status(200).json({
+            message: 'Пользователь удален'
+        })
     } catch (e) {
         errorhandler(res, e)
     }
